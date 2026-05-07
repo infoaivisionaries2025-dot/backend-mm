@@ -2,7 +2,7 @@ from django.db.models import Q
 
 
 def filter_article_queryset(queryset, params):
-    search = params.get("search")
+    search = (params.get("search") or params.get("q") or "").strip()
     status = params.get("status")
     category_slug = params.get("category__slug") or params.get("category")
     tag_slug = params.get("tags__slug") or params.get("tag")
