@@ -123,7 +123,7 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL", default="noreply@magnivelmedia.local")
+DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL", default="noreply@magnivelinternational.local")
 
 RAZORPAY_KEY_ID = config("RAZORPAY_KEY_ID", default="")
 RAZORPAY_KEY_SECRET = config("RAZORPAY_KEY_SECRET", default="")

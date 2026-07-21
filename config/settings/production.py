@@ -55,13 +55,13 @@ def _cloudinary_config():
 
 DEBUG = False
 
-DEFAULT_PUBLIC_API_DOMAIN = "api.magnivel.com"
+DEFAULT_PUBLIC_API_DOMAIN = "api.magnivelinternational.org"
 DEFAULT_FRONTEND_ORIGINS = [
-    "https://magnivel.com",
-    "https://www.magnivel.com",
+    "https://magnivelinternational.org",
+    "https://www.magnivelinternational.org",
     "https://frontend-mm.vercel.app",
 ]
-DEFAULT_ADMIN_FRONTEND_ORIGINS = ["https://admin.magnivel.com"]
+DEFAULT_ADMIN_FRONTEND_ORIGINS = ["https://admin.magnivelinternational.org"]
 
 CONFIGURED_FRONTEND_ORIGINS = _unique(
     [
