@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     "apps.subscriptions",
     "apps.comments",
     "apps.notifications",
+    "apps.media",
 ]
 
 MIDDLEWARE = [
@@ -149,8 +150,31 @@ CELERY_TASK_ALWAYS_EAGER = env_flag("CELERY_TASK_ALWAYS_EAGER", default=False)
 CELERY_BROKER_URL = REDIS_URL or "redis://localhost:6379/0"
 CELERY_RESULT_BACKEND = REDIS_URL or "redis://localhost:6379/0"
 
+# ---------------------------------------------------------------------------
+# Media / Image upload settings
+# ---------------------------------------------------------------------------
+MEDIA_UPLOAD_MAX_SIZE = {
+    "profile": 2 * 1024 * 1024,     # 2 MB
+    "cover": 5 * 1024 * 1024,       # 5 MB
+    "gallery": 10 * 1024 * 1024,    # 10 MB
+    "editor": 5 * 1024 * 1024,      # 5 MB
+}
+MEDIA_ALLOWED_EXTENSIONS = {"jpg", "jpeg", "png", "webp", "avif"}
+MEDIA_BLOCKED_EXTENSIONS = {
+    "exe", "php", "js", "html", "htm", "zip", "rar", "apk",
+    "svg", "bat", "cmd", "sh", "py", "rb", "pl", "cgi",
+    "asp", "aspx", "jsp",
+}
+MEDIA_IMAGE_QUALITY = 80
+MEDIA_THUMBNAIL_SIZES = {
+    "thumbnail": 300,
+    "medium": 800,
+    "large": 1600,
+}
+
 REST_FRAMEWORK["DEFAULT_THROTTLE_RATES"] = {
     "subscription_checkout": "10/hour",
     "subscription_verify": "30/hour",
     "subscription_webhook": "120/min",
+    "image_upload": "30/hour",
 }

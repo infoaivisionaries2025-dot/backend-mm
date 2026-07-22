@@ -11,6 +11,17 @@ from .models import Article, Category, Tag
 User = get_user_model()
 
 
+import io
+from PIL import Image
+
+def _get_test_image_file(filename="cover.jpg"):
+    file_obj = io.BytesIO()
+    image = Image.new("RGB", (100, 100), color=(255, 0, 0))
+    image.save(file_obj, format="JPEG")
+    file_obj.seek(0)
+    return SimpleUploadedFile(filename, file_obj.read(), content_type="image/jpeg")
+
+
 class CategoryTagApiTests(APITestCase):
     def setUp(self):
         self.admin = User.objects.create_user(
@@ -128,11 +139,7 @@ class CategoryTagApiTests(APITestCase):
                     "status": Article.STATUS_DRAFT,
                     "category_id": self.category.id,
                     "tag_ids": [self.tag.id],
-                    "cover_image_file": SimpleUploadedFile(
-                        "cover.jpg",
-                        b"fake-image-bytes",
-                        content_type="image/jpeg",
-                    ),
+                    "cover_image_file": _get_test_image_file("cover.jpg"),
                 },
                 format="multipart",
             )
@@ -171,11 +178,7 @@ class CategoryTagApiTests(APITestCase):
             response = self.client.patch(
                 reverse("article-detail", args=[article.pk]),
                 {
-                    "cover_image_file": SimpleUploadedFile(
-                        "updated-cover.jpg",
-                        b"fake-image-bytes",
-                        content_type="image/jpeg",
-                    ),
+                    "cover_image_file": _get_test_image_file("updated-cover.jpg"),
                 },
                 format="multipart",
             )
@@ -196,15 +199,16 @@ class CategoryTagApiTests(APITestCase):
         self.client.force_authenticate(self.author)
 
         with patch("apps.articles.uploads.is_cloudinary_configured", return_value=True), patch(
-            "apps.articles.uploads.cloudinary.uploader.upload",
+            "apps.media.storage.StorageService.upload",
             return_value={
-                "secure_url": "https://res.cloudinary.com/demo/image/upload/articles/covers/test-image.jpg",
+                "url": "https://res.cloudinary.com/demo/image/upload/articles/covers/test-image.jpg",
                 "public_id": "articles/covers/test-image",
+                "storage": "cloudinary",
             },
         ) as mocked_upload:
             response = self.client.post(
                 reverse("article-upload-image"),
-                {"image": SimpleUploadedFile("cover.jpg", b"fake-image-bytes", content_type="image/jpeg")},
+                {"image": _get_test_image_file("cover.jpg")},
                 format="multipart",
             )
 
@@ -225,7 +229,7 @@ class CategoryTagApiTests(APITestCase):
         ):
             response = self.client.post(
                 reverse("article-upload-image"),
-                {"image": SimpleUploadedFile("cover.jpg", b"fake-image-bytes", content_type="image/jpeg")},
+                {"image": _get_test_image_file("cover.jpg")},
                 format="multipart",
             )
 

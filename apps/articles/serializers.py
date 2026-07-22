@@ -47,7 +47,7 @@ class ArticleSerializer(serializers.ModelSerializer):
     author = UserSerializer(read_only=True)
     category = CategorySerializer(read_only=True)
     tags = TagSerializer(read_only=True, many=True)
-    cover_image_file = serializers.FileField(write_only=True, required=False, allow_null=True)
+    cover_image_file = serializers.ImageField(write_only=True, required=False, allow_null=True)
     category_id = serializers.PrimaryKeyRelatedField(
         source="category",
         queryset=Category.objects.all(),
@@ -77,6 +77,11 @@ class ArticleSerializer(serializers.ModelSerializer):
             "excerpt",
             "content",
             "cover_image",
+            "cover_image_thumbnail",
+            "cover_image_medium",
+            "cover_image_large",
+            "cover_image_width",
+            "cover_image_height",
             "cover_image_file",
             "status",
             "is_featured",
@@ -86,7 +91,7 @@ class ArticleSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
         )
-        read_only_fields = ("id", "slug", "view_count", "read_time", "published_at", "created_at", "updated_at")
+        read_only_fields = ("id", "slug", "view_count", "read_time", "published_at", "created_at", "updated_at", "cover_image_thumbnail", "cover_image_medium", "cover_image_large", "cover_image_width", "cover_image_height")
 
     def _attach_uploaded_cover_image(self, validated_data):
         image_file = validated_data.pop("cover_image_file", None)
@@ -102,7 +107,14 @@ class ArticleSerializer(serializers.ModelSerializer):
         except RuntimeError as exc:
             raise ImageUploadFailed(str(exc)) from exc
 
-        validated_data["cover_image"] = upload_result["url"]
+        validated_data["cover_image"] = upload_result.get("url", "")
+        validated_data["cover_image_thumbnail"] = upload_result.get("thumbnail_url", "")
+        validated_data["cover_image_medium"] = upload_result.get("medium_url", "")
+        validated_data["cover_image_large"] = upload_result.get("large_url", "")
+        validated_data["cover_image_width"] = upload_result.get("width")
+        validated_data["cover_image_height"] = upload_result.get("height")
+        validated_data["cover_image_size"] = upload_result.get("size")
+        validated_data["cover_image_format"] = upload_result.get("format", "")
 
     def create(self, validated_data):
         tags = validated_data.pop("tags", [])
