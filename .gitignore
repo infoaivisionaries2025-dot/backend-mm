@@ -3,6 +3,8 @@ __pycache__/
 *.py[cod]
 db.sqlite3
 media/
+!apps/media/
+!apps/media/**
 staticfiles/
 .env
 !.env.example
