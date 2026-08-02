@@ -29,7 +29,24 @@ class HealthCheckView(APIView):
     def get(self, request):
         return Response({"status": "ok", "service": "backend-mm"})
 
+
+class ApiRootView(APIView):
+    """Public landing response for the API domain."""
+
+    authentication_classes = []
+    permission_classes = []
+
+    def get(self, request):
+        return Response(
+            {
+                "service": "Magnivel International API",
+                "status": "ok",
+                "health": request.build_absolute_uri("/api/health/"),
+            }
+        )
+
 urlpatterns = [
+    path("", ApiRootView.as_view(), name="api-root"),
     path("admin/", admin.site.urls),
     path("api/health/", HealthCheckView.as_view(), name="health-check"),
     path("api/auth/", include("apps.users.urls")),
