@@ -56,7 +56,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddConstraint(
             model_name='subscription',
-            constraint=models.CheckConstraint(condition=models.Q(('starts_at__isnull', True), ('expires_at__isnull', True), ('expires_at__gt', models.F('starts_at')), _connector='OR'), name='subscription_expiry_after_start'),
+            constraint=models.CheckConstraint(check=models.Q(('starts_at__isnull', True), ('expires_at__isnull', True), ('expires_at__gt', models.F('starts_at')), _connector='OR'), name='subscription_expiry_after_start'),
         ),
 
     ]
