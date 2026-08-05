@@ -23,6 +23,7 @@ from apps.subscriptions.serializers import (
     AdminPlanSerializer,
     AdminSubscriptionSerializer,
 )
+from apps.subscriptions.services import invalidate_plan_cache
 from utils.pagination import AdminResultsSetPagination
 
 from .serializers import UserSerializer
@@ -243,6 +244,7 @@ class AdminPlanListCreateView(APIView):
         serializer = AdminPlanSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
+        invalidate_plan_cache()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
@@ -261,6 +263,7 @@ class AdminPlanDetailView(APIView):
         serializer = AdminPlanSerializer(plan, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
+        invalidate_plan_cache()
         return Response(serializer.data)
 
     def delete(self, request, pk):
@@ -271,6 +274,7 @@ class AdminPlanDetailView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
         plan.delete()
+        invalidate_plan_cache()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 

@@ -75,13 +75,20 @@ class ArticleDetailView(APIView):
         return [permissions.IsAuthenticated()]
 
     def get_object(self, identifier, request):
+        import uuid
         queryset = Article.objects.select_related("author", "category").prefetch_related("tags")
         if request.method == "GET":
-            article = get_object_or_404(queryset, slug=identifier)
+            try:
+                uuid.UUID(identifier)
+                article = get_object_or_404(queryset, Q(slug=identifier) | Q(pk=identifier))
+            except ValueError:
+                article = get_object_or_404(queryset, slug=identifier)
+
             if article.status != Article.STATUS_PUBLISHED:
                 if not request.user.is_authenticated or (article.author != request.user and not request.user.is_staff):
                     raise PermissionDenied("You do not have access to this article.")
             return article
+
         article = get_object_or_404(queryset, pk=identifier)
         if article.author != request.user and not request.user.is_staff:
             raise PermissionDenied("You do not own this article.")

@@ -52,7 +52,7 @@ plans_data = [
         "is_popular": False,
         "sort_order": 1,
         "description": "Standard access to public articles and community discussion.",
-        "features": '["Access to public articles", "Community discussion", "Basic newsletter"]',
+        "features": ["Access to public articles", "Community discussion", "Basic newsletter"],
         "is_active": True,
     },
     {
@@ -65,7 +65,7 @@ plans_data = [
         "is_popular": True,
         "sort_order": 2,
         "description": "Full uninhibited access to all premium publications, deep dives, and expert analysis.",
-        "features": '["Unlimited full article access", "Exclusive deep-dive reports", "Ad-free reading experience", "Author comments & Q&A", "Cancel anytime"]',
+        "features": ["Unlimited full article access", "Exclusive deep-dive reports", "Ad-free reading experience", "Author comments & Q&A", "Cancel anytime"],
         "is_active": True,
     },
     {
@@ -78,7 +78,7 @@ plans_data = [
         "is_popular": False,
         "sort_order": 3,
         "description": "Save 33% per year with full annual access, early research papers, and priority support.",
-        "features": '["All Pro Monthly features", "Save 33% per year", "Early access to research papers", "Priority support", "Download PDF reports"]',
+        "features": ["All Pro Monthly features", "Save 33% per year", "Early access to research papers", "Priority support", "Download PDF reports"],
         "is_active": True,
     },
 ]

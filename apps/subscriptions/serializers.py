@@ -1,3 +1,4 @@
+import json
 from rest_framework import serializers
 from django.utils import timezone
 
@@ -5,7 +6,25 @@ from .models import Payment, Plan, Subscription
 from .services import SUPPORTED_CHECKOUT_CURRENCIES
 
 
+def parse_features(val):
+    if not val:
+        return []
+    if isinstance(val, list):
+        return [str(item).strip() for item in val if str(item).strip()]
+    if isinstance(val, str):
+        try:
+            parsed = json.loads(val)
+            if isinstance(parsed, list):
+                return [str(item).strip() for item in parsed if str(item).strip()]
+        except Exception:
+            pass
+        return [val.strip()] if val.strip() else []
+    return []
+
+
 class PlanSerializer(serializers.ModelSerializer):
+    features = serializers.SerializerMethodField()
+
     class Meta:
         model = Plan
         fields = (
@@ -13,6 +32,9 @@ class PlanSerializer(serializers.ModelSerializer):
             "price", "price_usd", "currency", "features",
             "is_popular", "sort_order",
         )
+
+    def get_features(self, obj):
+        return parse_features(obj.features)
 
 
 class AdminPlanSerializer(serializers.ModelSerializer):
@@ -26,6 +48,11 @@ class AdminPlanSerializer(serializers.ModelSerializer):
             "is_active", "is_popular", "sort_order",
             "subscription_count", "created_at",
         )
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data["features"] = parse_features(instance.features)
+        return data
 
     def validate_currency(self, value):
         return (value or "INR").upper()
