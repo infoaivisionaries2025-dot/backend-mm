@@ -9,30 +9,36 @@ from apps.subscriptions.models import Plan
 
 print("=== Setting up Admin Users ===")
 
-# 1. Update naveenmalik@gmail.com
+# 1. Update naveenmalik@gmail.com if present
 user1 = CustomUser.objects.filter(email="naveenmalik@gmail.com").first()
 if user1:
+    user1.full_name = "Magnivel International Media"
     user1.is_staff = True
     user1.is_superuser = True
     user1.set_password("Admin@123456")
     user1.save()
-    print("Updated user naveenmalik@gmail.com -> is_staff=True, is_superuser=True, password set to Admin@123456")
+    print("Updated user naveenmalik@gmail.com -> is_staff=True, is_superuser=True, full_name='Magnivel International Media'")
 
 # 2. Ensure admin@magnivel.com exists
 admin_user, created = CustomUser.objects.get_or_create(
     email="admin@magnivel.com",
     defaults={
         "username": "admin",
-        "full_name": "Magnivel Admin",
+        "full_name": "Magnivel International Media",
         "is_staff": True,
         "is_superuser": True,
         "is_active": True,
     }
 )
+admin_user.full_name = "Magnivel International Media"
 admin_user.is_staff = True
 admin_user.is_superuser = True
 admin_user.set_password("Admin@123456")
 admin_user.save()
+
+# 3. Update all staff/superuser full_name
+CustomUser.objects.filter(is_staff=True).update(full_name="Magnivel International Media")
+CustomUser.objects.filter(full_name__icontains="Naveen").update(full_name="Magnivel International Media")
 
 if created:
     print("Created superuser admin@magnivel.com (password: Admin@123456)")

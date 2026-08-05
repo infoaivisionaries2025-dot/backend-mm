@@ -23,6 +23,14 @@ class UserSerializer(serializers.ModelSerializer):
         )
         read_only_fields = ("id", "email", "is_staff", "date_joined", "has_active_subscription")
 
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        if instance.is_staff or instance.is_superuser:
+            data["full_name"] = "Magnivel International Media"
+        else:
+            data["full_name"] = instance.full_name or instance.username
+        return data
+
 
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, min_length=8)

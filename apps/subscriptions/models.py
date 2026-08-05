@@ -67,12 +67,11 @@ class Subscription(models.Model):
                 name="uniq_active_subscription_per_user",
             ),
             models.CheckConstraint(
-                condition=Q(starts_at__isnull=True)
+                check=Q(starts_at__isnull=True)
                 | Q(expires_at__isnull=True)
                 | Q(expires_at__gt=F("starts_at")),
                 name="subscription_expiry_after_start",
             ),
-
         ]
 
     def __str__(self):
