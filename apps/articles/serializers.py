@@ -134,6 +134,19 @@ class ArticleSerializer(serializers.ModelSerializer):
             instance.tags.set(tags)
         return instance
 
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        cover = data.get("cover_image")
+        if cover:
+            if not data.get("cover_image_thumbnail"):
+                data["cover_image_thumbnail"] = cover
+            if not data.get("cover_image_medium"):
+                data["cover_image_medium"] = cover
+            if not data.get("cover_image_large"):
+                data["cover_image_large"] = cover
+        return data
+
+
 
 class ArticleDetailSerializer(ArticleSerializer):
     related_articles = serializers.SerializerMethodField()
